@@ -1,26 +1,20 @@
 import tkinter as tk
-import ttkbootstrap as ttk
+from login_window import LoginWindow
 
-window_main = ttk.Window()
-window_main.title("GPS")
-window_main.attributes("-fullscreen", True)
+class MainApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Main Application")
+        self.geometry("1280x720")
 
+        # Button to open login window
+        self.open_login_button = tk.Button(self, text="Open Login Window", command=self.open_login_window)
+        self.open_login_button.pack(pady=20)
 
-header_frame = ttk.Frame(window_main, height=50,style="primary")
-header_frame.pack(side=tk.TOP, fill=tk.X)
+    def open_login_window(self):
+        # Open the LoginWindow
+        login_window = LoginWindow(self)
 
-style = ttk.Style()
-
-# Dashboard
-dashboard_frame = ttk.Frame(window_main, width = 50, style="success")
-dashboard_frame.pack(side=tk.LEFT, fill=tk.Y)
-
-# Main Content
-content_frame = ttk.Frame(window_main, style="light")
-content_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
-
-def close_window(event):
-    window_main.destroy()
-
-window_main.bind("<Escape>", close_window)
-window_main.mainloop()
+if __name__ == "__main__":
+    app = MainApp()
+    app.mainloop()
