@@ -1,4 +1,4 @@
-from base_window import BaseWindow
+from .base_window import BaseWindow
 import tkinter as tk
 from tkinter import ttk
 
