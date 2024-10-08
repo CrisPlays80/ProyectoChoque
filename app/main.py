@@ -1,26 +1,23 @@
 import tkinter as tk
 from windows import LoginWindow
-from frame import Header
+from frame import Dashboard
 
 class MainApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Main Application")
-        self.geometry("1280x720")
-
-        self.header = Header(self)
-        self.header.pack(side = "top", fill="x")
-        
-        self.dashboard = tk.Frame(self, background="#0b5563", width=60)
-        self.dashboard.pack(side="left", fill="y")        
-        
-        # Button to open login window
-        self.open_login_button = tk.Button(self, text="Open Login Window", command=self.open_login_window)
-        self.open_login_button.pack(pady=20)
-
-    def open_login_window(self):
-        # Open the LoginWindow
-        login_window = LoginWindow(self)
+        self.configure(bg="#252330")
+        self.state("zoomed")
+        #  Guardamos el largo y alto de la ventana
+        """ wventana = 1280
+        hventana = 540
+        #  Aplicamos la siguiente formula para calcular donde debería posicionarse
+        pwidth = round(wtotal/2-wventana/2)
+        pheight = round(htotal/2-hventana/2)
+        #  Se lo aplicamos a la geometría de la ventana
+        self.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight)) """
+        self.dashboard = Dashboard(self)
+        self.dashboard.pack(side="left", fill="y", expand=True)
 
 if __name__ == "__main__":
     app = MainApp()
