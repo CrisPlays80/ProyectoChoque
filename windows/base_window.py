@@ -7,8 +7,13 @@ class BaseWindow(tk.Toplevel):
         self.title(title)
         self.geometry(f"{width}x{height}")
 
-        self.header = ttk.Label(self, text=title, style="Header.TLabel")
-        self.header.pack(pady = 10)
+        wtotal = self.winfo_screenwidth()
+        htotal = self.winfo_screenheight()
 
-        self.close_btn = ttk.Button(self, text="X", command=self.destroy)
-        self.close_btn.pack(side = "right", pady = 10)
+        wventana = width
+        hventana = height
+        #  Aplicamos la siguiente formula para calcular donde debería posicionarse
+        pwidth = round(wtotal/2-wventana/2)
+        pheight = round(htotal/2-hventana/2)
+        #  Se lo aplicamos a la geometría de la ventana
+        self.geometry(str(wventana)+"x"+str(hventana)+"+"+str(pwidth)+"+"+str(pheight))
