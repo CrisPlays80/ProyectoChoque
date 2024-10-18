@@ -9,6 +9,7 @@ class Dashboard(tk.Frame):
         super().__init__(parent, background="#3B3A4A", width=160)
         self.content_frame = content_frame
         self.create_widgets()
+        self.pack_propagate(False)
         
     def create_widgets(self):
         self.style = AppStyle()
@@ -41,12 +42,11 @@ class Dashboard(tk.Frame):
         self.line = ttk.Separator(self, orient="horizontal")
         self.line.pack(pady=10, fill="x")
 
-        self.pack_propagate(False)
 
     def show_data_content(self,event):
-        print("HELLO WORLD")
+        from . import Data
         self.clear_content()
-        ttk.Label(self.content_frame, text="Content", style="Dashboard.TLabel").pack(pady=60)
+        self.data = Data(self.content_frame)
 
     def clear_content(self):
         for widget in self.content_frame.winfo_children():

@@ -1,20 +1,25 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import font as tkfont
+
 
 class AppStyle:
     def __init__(self, theme="default"):
         self.style = ttk.Style()
         self.style.theme_use(theme)
+        self.custom_font_path = "assets/fonts/NotoSans.ttf"
+        self.custom_font = tkfont.Font(family="CustomFont", size=16)
+        print("Sexo")
 
-    def create_button_style(self, style_name, font="Helvetica", font_size=10, background="#3B3A4A", foreground="#F5F9F8"):
+    def create_button_style(self, style_name, font="CustomFont", font_size=36, background="#3B3A4A", foreground="#F5F9F8"):
         self.style.configure(style_name, 
-                            font=(font, font_size, "bold"), 
+                            font=tkfont.Font(family=font, size=font_size), 
                             background=background, 
                             foreground=foreground)
 
-    def create_label_style(self, style_name, font="Helvetica", font_size=10, background="red", foreground="black"):
+    def create_label_style(self, style_name, font="CustomFont", font_size=36, background="red", foreground="black"):
         self.style.configure(style_name, 
-                            font=(font, font_size, "bold"), 
+                            font=tkfont.Font(family=font, size=font_size), 
                             background=background, 
                             foreground=foreground)
 
