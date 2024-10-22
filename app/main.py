@@ -9,19 +9,16 @@ class MainApp(tk.Tk):
         self.title("Main Application")
         self.configure(bg="#252330")
         self.state("zoomed")
-        
-        self.content_frame = tk.Frame(self, bg="#252330")
-        self.content_frame.pack(side = "right", fill="both", expand=True)
-        
-        self.header = Header(self.content_frame)
-        self.header.pack(side="top", fill="x")
 
+        self.content_frame = tk.Frame(self, bg="#252330")
+        
         self.dashboard = Dashboard(self, self.content_frame)
         self.dashboard.pack(side="left", fill="y")
-
-        self.label = tk.Label(self.content_frame, text="Contentososoosososo", bg="#252330", fg="white")
-        self.label.pack(side="top", fill="both")
-
+        
+        self.header_frame = Header(self)
+        self.header_frame.pack(side="top", fill="x")
+        
+        self.content_frame.pack(side = "right", fill="both")
 
 if __name__ == "__main__":
     app = MainApp()
