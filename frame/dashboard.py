@@ -19,7 +19,8 @@ class Dashboard(tk.Frame):
         
         # Crear estilos para el logo
         self.style.create_label_style("Logo.TLabel", font="Helvetica", font_size=15, background="#3B3A4A", foreground="#FFFFFF")
-        
+        self.style.create_button_style("Dashboard.TButton", font="Helvetica", font_size=15, background="#3B3A4A", foreground="#F5F9F8", borderwidth=0)
+
         # Image
         self.image = Image.open("assets/images/logo.png")
         self.image = self.image.resize((100, 90), Image.Resampling.LANCZOS)
@@ -29,21 +30,20 @@ class Dashboard(tk.Frame):
         self.logo = ttk.Label(self, image=self.image, style="Logo.TLabel")
         self.logo.pack(pady=10)
         
-        # Data Label
-        self.data_label = ttk.Label(self, text="Datos", style="Dashboard.TLabel")
-        self.data_label.pack(pady=60)
-        self.data_label.bind("<Button-1>", self.show_data_content)
+        # Data Button
+        self.data_button = ttk.Button(self, text="Datos", style="Dashboard.TButton", command=self.show_data_content)
+        self.data_button.pack(pady=60)
 
-        # Alerts Label
-        self.alert_label = ttk.Label(self, text="Alertas", style="Dashboard.TLabel")
-        self.alert_label.pack(pady=50)
+        # Alerts Button
+        self.alert_button = ttk.Button(self, text="Alertas", style="Dashboard.TButton")
+        self.alert_button.pack(pady=50)
         
         # Line
         self.line = ttk.Separator(self, orient="horizontal")
         self.line.pack(pady=10, fill="x")
 
 
-    def show_data_content(self,event):
+    def show_data_content(self):
         from . import Data
         self.clear_content()
         self.data = Data(self.content_frame)
