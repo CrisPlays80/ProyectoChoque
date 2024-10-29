@@ -23,13 +23,13 @@ class Dashboard(tk.Frame):
         self.style.create_button_style("Dashboard.TButton", font="Helvetica", font_size=15, background="#3B3A4A", foreground="#F5F9F8", borderwidth=0)
 
         # Image
-        """ self.image = Image.open("assets/images/logo.png")
+        self.image = Image.open("assets/images/logo.png")
         self.image = self.image.resize((100, 90), Image.Resampling.LANCZOS)
         self.image = ImageTk.PhotoImage(self.image)
         
         # Add Logo
         self.logo = ttk.Label(self, image=self.image, style="Logo.TLabel")
-        self.logo.pack(pady=10) """
+        self.logo.pack(pady=10)
         
         # Data Button
         self.data_button = ttk.Button(self, text="Datos", style="Dashboard.TButton", command=self.show_data_content)

@@ -10,6 +10,13 @@ class AppStyle:
         self.custom_font_path = "assets/fonts/NotoSans.ttf"
         self.custom_font = tkfont.Font(family="CustomFont", size=16)
 
+    def create_treeview_style(self, style_name, font="CustomFont", font_size=36, background="red", foreground="black"):
+        self.style.configure(style_name, 
+                            font=tkfont.Font(family=font, size=font_size), 
+                            background=background, 
+                            foreground=foreground,
+                            fieldbackground=background)
+
     def create_button_style(self, style_name, font="CustomFont", font_size=36, background="#3B3A4A", foreground="#F5F9F8", borderwidth=0):
         self.style.configure(style_name, 
                             font=tkfont.Font(family=font, size=font_size), 
@@ -18,9 +25,10 @@ class AppStyle:
                             borderwith= borderwidth,
                             relief='flat'
                             )
+        
         self.style.map("Dashboard.TButton",
-          background=[('active', '#3B3A4A'), ('pressed', '#3B3A4A')],
-          relief=[('pressed', 'flat')])
+            background=[('active', '#3B3A4A'), ('pressed', '#3B3A4A')],
+            relief=[('pressed', 'flat')])
 
     def create_label_style(self, style_name, font="CustomFont", font_size=36, background="red", foreground="black"):
         self.style.configure(style_name, 
