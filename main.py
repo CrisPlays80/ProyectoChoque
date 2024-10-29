@@ -10,7 +10,7 @@ class MainApp(tk.Tk):
         self.configure(bg="#252330")
         self.state("zoomed")
 
-        self.content_frame = tk.Frame(self, bg="#252330")
+        self.content_frame = tk.Frame(self, bg="#ffffff")
         
         self.dashboard = Dashboard(self, self.content_frame)
         self.dashboard.pack(side="left", fill="y")
@@ -18,7 +18,8 @@ class MainApp(tk.Tk):
         self.header_frame = Header(self)
         self.header_frame.pack(side="top", fill="x")
         
-        self.content_frame.pack(side = "right", fill="both")
+        self.content_frame.pack(expand=True, fill="both")
+        self.content_frame.pack_propagate(False)
 
 if __name__ == "__main__":
     app = MainApp()

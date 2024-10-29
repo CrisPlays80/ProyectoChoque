@@ -9,7 +9,6 @@ class AppStyle:
         self.style.theme_use(theme)
         self.custom_font_path = "assets/fonts/NotoSans.ttf"
         self.custom_font = tkfont.Font(family="CustomFont", size=16)
-        print("Sexo")
 
     def create_button_style(self, style_name, font="CustomFont", font_size=36, background="#3B3A4A", foreground="#F5F9F8", borderwidth=0):
         self.style.configure(style_name, 
