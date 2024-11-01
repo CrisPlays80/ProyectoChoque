@@ -6,9 +6,10 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 
 class Dashboard(tk.Frame):
-    def __init__(self, parent, content_frame):
+    def __init__(self, parent, content_frame, connect_db):
         super().__init__(parent, background="#3B3A4A", width=160)
         self.content_frame = content_frame
+        self.connect_db = connect_db
         self.create_widgets()
         self.pack_propagate(False)
         
@@ -52,7 +53,7 @@ class Dashboard(tk.Frame):
     def show_data_content(self):
         from . import Data
         self.clear_content()
-        self.data = Data(self.content_frame)
+        self.data = Data(self.content_frame, self.connect_db)
 
     def clear_content(self):
         for widget in self.content_frame.winfo_children():
