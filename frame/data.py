@@ -1,6 +1,7 @@
 from assets.colors.colors import AppStyle  # Importa el estilo personalizado para los elementos de la interfaz
 from windows import LoginWindow  # Importa la ventana de inicio de sesión (no utilizada en este fragmento)
 from functions.calcular_triage import clasificar_triage
+from functions.process_data import merge_sort
 
 import tkinter as tk
 from tkinter import ttk
@@ -111,13 +112,16 @@ class Data(tk.Frame):
         Ordenar la tabla y los datos dependiendo de la selección en el ComboBox.
         """
         option = self.sort_box.get()
-        if "Velocidad" in option:
-            self.merge_sort(self.velocidad, "Velocidad", reverse="(Des)" in option)
-        elif "Orientación" in option:
-            self.merge_sort(self.orientacion, "Orientación", reverse="(Des)" in option)
-        elif "Triage" in option:
-            self.merge_sort(self.triage, "Triage", reverse="(Des)" in option)
+        data_tuples = list(zip(self.velocidad, self.orientacion, self.triage))
 
+        if "Velocidad" in option:
+            sorted_data = merge_sort(data_tuples, key_index=0, reverse="(Des)" in option)
+        elif "Orientación" in option:
+            sorted_data = merge_sort(data_tuples, key_index=1, reverse="(Des)" in option)
+        elif "Triage" in option:
+            sorted_data = merge_sort(data_tuples, key_index=2, reverse="(Des)" in option)
+
+        self.velocidad, self.orientacion, self.triage = zip(*sorted_data)
         # Actualizar tabla con el orden
         self.tree.delete(*self.tree.get_children())
         for i in range(len(self.velocidad)):
@@ -159,34 +163,3 @@ class Data(tk.Frame):
 
         self.ax.legend()
         self.canvas.draw()
-
-    def merge_sort(self, data_list, attribute, reverse=False):
-        """Algoritmo Merge Sort para ordenar los datos."""
-        if len(data_list) > 1:
-            mid = len(data_list) // 2
-            left_half = data_list[:mid]
-            right_half = data_list[mid:]
-
-            # Recursión en ambas mitades
-            self.merge_sort(left_half, attribute, reverse)
-            self.merge_sort(right_half, attribute, reverse)
-
-            i = j = k = 0
-            while i < len(left_half) and j < len(right_half):
-                if (left_half[i] > right_half[j] and reverse) or (left_half[i] < right_half[j] and not reverse):
-                    data_list[k] = left_half[i]
-                    i += 1
-                else:
-                    data_list[k] = right_half[j]
-                    j += 1
-                k += 1
-
-            while i < len(left_half):
-                data_list[k] = left_half[i]
-                i += 1
-                k += 1
-
-            while j < len(right_half):
-                data_list[k] = right_half[j]
-                j += 1
-                k += 1

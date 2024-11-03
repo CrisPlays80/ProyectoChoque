@@ -8,6 +8,7 @@ from PIL import Image, ImageTk
 class Dashboard(tk.Frame):
     def __init__(self, parent, content_frame, connect_db):
         super().__init__(parent, background="#3B3A4A", width=160)
+        self.parent = parent
         self.content_frame = content_frame
         self.connect_db = connect_db
         self.create_widgets()
@@ -51,10 +52,12 @@ class Dashboard(tk.Frame):
         messagebox.showinfo("Alertas", "En proceso mi profe.....")
 
     def show_data_content(self):
-        from . import Data
-        self.clear_content()
-        self.data = Data(self.content_frame, self.connect_db)
-
+        if self.parent.logged_in:
+            from . import Data
+            self.clear_content()
+            self.data = Data(self.content_frame, self.connect_db)
+        else:
+            messagebox.showinfo("Error", "Debes iniciar sesión primero")
     def clear_content(self):
         for widget in self.content_frame.winfo_children():
             widget.destroy()

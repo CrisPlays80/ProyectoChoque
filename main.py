@@ -11,7 +11,9 @@ class MainApp(tk.Tk):
         self.state("zoomed")
         self.db_connection = connect_db
 
-        self.content_frame = tk.Frame(self, bg="#ffffff")
+        self.logged_in = False
+
+        self.content_frame = tk.Frame(self, bg="#252330")
         
         self.dashboard = Dashboard(self, self.content_frame, self.db_connection)
         self.dashboard.pack(side="left", fill="y")

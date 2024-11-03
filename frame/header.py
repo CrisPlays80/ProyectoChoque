@@ -8,6 +8,7 @@ class Header(tk.Frame):
     def __init__(self, parent, connect_db):
         super().__init__(parent, background="#3B3A4A", height=100)
         self.connect_db = connect_db
+        self.parent = parent
         self.create_widgets()
         self.pack_propagate(False)
 
@@ -19,6 +20,7 @@ class Header(tk.Frame):
         self.login_button.pack(side="right", padx=10)
     
     def username(self, username):
+        self.parent.logged_in = True
         self.label.config(text=f'Hola, {username} bienvenido!')
         self.login_button.destroy()
 

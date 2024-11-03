@@ -96,7 +96,7 @@ class LoginWindow(BaseWindow):
             
             if user:
                 # Si el usuario existe, verificamos si la contraseña es correcta
-                if password == user[1]:  # Verificamos si la contraseña coincide
+                if password == user[2]:  # Verificamos si la contraseña coincide
                     messagebox.showinfo("Login exitoso", f"¡Bienvenido {username}!")
                     self.username_callback(username)
                     self.destroy()  # Cerramos la ventana de inicio de sesión
