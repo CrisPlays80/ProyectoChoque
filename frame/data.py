@@ -1,5 +1,4 @@
 from assets.colors.colors import AppStyle  # Importa el estilo personalizado para los elementos de la interfaz
-from windows import LoginWindow  # Importa la ventana de inicio de sesión (no utilizada en este fragmento)
 from functions.calcular_triage import clasificar_triage
 from functions.process_data import merge_sort
 

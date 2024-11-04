@@ -1,15 +1,13 @@
-from .base_window import BaseWindow
 from assets.colors.colors import AppStyle
+from frame import RoundedFrame
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox  # Usamos messagebox para mostrar mensajes de error o confirmación
 
-class LoginWindow(BaseWindow):
+class LoginWindow(tk.Frame):
     def __init__(self, parent, connect_db, username_callback):
-        super().__init__(parent, title="Login", width=400, height=250)
-        self.configure(bg="#575669")
-        self.resizable(False, False)
+        super().__init__(parent, bg='#252330')
         self.username_callback = username_callback
         self.connect_db = connect_db
         self.create_widgets()
@@ -17,35 +15,58 @@ class LoginWindow(BaseWindow):
     def create_widgets(self):
         # Crear una instancia de AppStyle para definir los estilos de la interfaz
         self.style = AppStyle()
-        self.style.create_label_style("LoginWindow.TLabel", font="Helvetica", background="#575669", foreground="white")
+        self.style.create_label_style("LoginWindow.TLabel", font="Helvetica", background="#525167", foreground="white")
         self.style.create_button_style("LoginWindow.TButton", font="Helvetica", background="#3B3A4A", foreground="white")
-    
+        
+        self.rounded_frame = RoundedFrame(self, width=1200, height=620, corner_radius=100, color='#3B3A4A')
+        self.rounded_frame.pack(pady=40)
+        
+        self.welcome_frame(self.rounded_frame)
+        self.login_frame(self.rounded_frame)
+
+    def welcome_frame(self, parent):
+        self.welcome_text = tk.Frame(parent, bg='#3B3A4A', width=400, height=400, highlightthickness=0)
+        self.welcome_text.place(x=100, y=110)
+
+        # Etiqueta de bienvenida
+        self.welcome_label = tk.Label(self.welcome_text, text="Welcome!", background="#3B3A4A",foreground="white", font=("Helvetica", 40, "bold"))
+        self.welcome_label.place(x=40, y=40)
+
+        # Etiqueta de descripción
+        self.description_label = tk.Label(self.welcome_text, text="We are happy to see you", background="#3B3A4A",foreground="white", font=("Helvetica", 16))
+        self.description_label.place(x=40, y=100)
+
+        # Etiqueta de instrucciones
+
+    def login_frame(self, parent):
+        self.login_text = tk.Frame(parent, bg='#525167', width=400, height=400, highlightthickness=0)
+        self.login_text.place(x=700, y=110)
         # Etiqueta "Username" (Nombre de usuario)
-        self.username_label = ttk.Label(self, text="Username:", style="LoginWindow.TLabel")
-        self.username_label.pack(pady=20)
+        self.username_label = ttk.Label(self.login_text, text="Username:", style="LoginWindow.TLabel")
+        self.username_label.place(x=40, y=40)
 
         # Campo de entrada para el nombre de usuario
         self.username_str = tk.StringVar()  # Se utiliza StringVar para vincular el texto del campo de entrada
-        self.username_entry = ttk.Entry(self, textvariable=self.username_str)
-        self.username_entry.pack(pady=0)
+        self.username_entry = ttk.Entry(self.login_text, textvariable=self.username_str)
+        self.username_entry.place(x=40, y=70, width=220)
 
         # Etiqueta "Password" (Contraseña)
-        self.password_label = ttk.Label(self, text="Password:", style="LoginWindow.TLabel")
-        self.password_label.pack(pady=20)
+        self.password_label = ttk.Label(self.login_text, text="Password:", style="LoginWindow.TLabel")
+        self.password_label.place(x=40, y=120)
 
         # Campo de entrada para la contraseña, con máscara de texto ("*")
         self.password_str = tk.StringVar()  # Se utiliza StringVar para vincular el texto del campo de entrada
-        self.password_entry = ttk.Entry(self, show="*", textvariable=self.password_str)
-        self.password_entry.pack(pady=0)
+        self.password_entry = ttk.Entry(self.login_text, show="*", textvariable=self.password_str)
+        self.password_entry.place(x=40, y=150, width=220)
 
         # Botón de "Register" (Registro)
-        self.register_button = ttk.Button(self, text="Register", command=self.register, style="LoginWindow.TButton")
-        self.register_button.place(x=90, y=190)  # Posicionamos el botón en la ventana
+        self.register_button = ttk.Button(self.login_text, text="Register", command=self.register, style="LoginWindow.TButton")
+        self.register_button.place(x=60, y=220, width=80)
 
         # Botón de "Login"
-        self.login_button = ttk.Button(self, text="Login", command=self.login, style="LoginWindow.TButton")
-        self.login_button.place(x=220, y=190)  # Posicionamos el botón en la ventana
-        
+        self.login_button = ttk.Button(self.login_text, text="Login", command=self.login, style="LoginWindow.TButton")
+        self.login_button.place(x=160, y=220, width=80)
+
     def register(self):
         # Obtener el valor de los campos de usuario y contraseña
         username = self.username_str.get()
@@ -99,7 +120,6 @@ class LoginWindow(BaseWindow):
                 if password == user[2]:  # Verificamos si la contraseña coincide
                     messagebox.showinfo("Login exitoso", f"¡Bienvenido {username}!")
                     self.username_callback(username)
-                    self.destroy()  # Cerramos la ventana de inicio de sesión
                 else:
                     # Si la contraseña no coincide, mostramos un mensaje de error
                     messagebox.showerror("Error", "Contraseña incorrecta")

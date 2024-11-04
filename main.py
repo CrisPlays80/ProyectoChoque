@@ -12,15 +12,31 @@ class MainApp(tk.Tk):
         self.db_connection = connect_db
 
         self.logged_in = False
+        self.username = None
 
+        self.show_login()
+            
+
+    def show_login(self):
+        self.login_window = LoginWindow(self, self.db_connection, self.login_success)
+        self.login_window.pack()
+
+    def login_success(self, username):
+        self.logged_in = True
+        self.username = username
+        self.login_window.destroy()
+
+        self.show_main_content()
+
+    def show_main_content(self):
         self.content_frame = tk.Frame(self, bg="#252330")
-        
+            
         self.dashboard = Dashboard(self, self.content_frame, self.db_connection)
         self.dashboard.pack(side="left", fill="y")
-        
+                
         self.header_frame = Header(self, self.db_connection)
         self.header_frame.pack(side="top", fill="x")
-        
+                
         self.content_frame.pack(expand=True, fill="both")
         self.content_frame.pack_propagate(False)
 
