@@ -1,4 +1,5 @@
 import tkinter as tk
+from assets.colors.colors import AppStyle
 from windows import LoginWindow
 from frame import Dashboard, Header
 from app.connect_db import connect_db
@@ -10,6 +11,8 @@ class MainApp(tk.Tk):
         self.configure(bg="#252330")
         self.state("zoomed")
         self.db_connection = connect_db
+        
+        self.style = AppStyle()
 
         self.logged_in = False
         self.username = None
@@ -18,7 +21,7 @@ class MainApp(tk.Tk):
             
 
     def show_login(self):
-        self.login_window = LoginWindow(self, self.db_connection, self.login_success)
+        self.login_window = LoginWindow(self, self.db_connection, self.login_success, self.style)
         self.login_window.pack()
 
     def login_success(self, username):
@@ -31,14 +34,23 @@ class MainApp(tk.Tk):
     def show_main_content(self):
         self.content_frame = tk.Frame(self, bg="#252330")
             
-        self.dashboard = Dashboard(self, self.content_frame, self.db_connection)
+        self.dashboard = Dashboard(self, self.content_frame, self.db_connection, self.logout, self.style)
         self.dashboard.pack(side="left", fill="y")
                 
-        self.header_frame = Header(self, self.db_connection)
+        self.header_frame = Header(self, self.db_connection, self.style)
         self.header_frame.pack(side="top", fill="x")
                 
         self.content_frame.pack(expand=True, fill="both")
         self.content_frame.pack_propagate(False)
+
+    def logout(self):
+        # Función de logout
+        self.logged_in = False
+        self.username = None
+        self.dashboard.destroy()
+        self.content_frame.destroy()  # Destruir el contenido actual
+        self.header_frame.destroy()   # Destruir el header
+        self.show_login() 
 
 if __name__ == "__main__":
     connect_db = connect_db()

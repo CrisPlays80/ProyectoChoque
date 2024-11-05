@@ -3,18 +3,19 @@ from frame import RoundedFrame
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox  # Usamos messagebox para mostrar mensajes de error o confirmación
+from tkinter import messagebox
+from PIL import Image, ImageTk  # Usamos messagebox para mostrar mensajes de error o confirmación
 
 class LoginWindow(tk.Frame):
-    def __init__(self, parent, connect_db, username_callback):
+    def __init__(self, parent, connect_db, username_callback, style):
         super().__init__(parent, bg='#252330')
         self.username_callback = username_callback
         self.connect_db = connect_db
+        self.style = style
         self.create_widgets()
 
     def create_widgets(self):
         # Crear una instancia de AppStyle para definir los estilos de la interfaz
-        self.style = AppStyle()
         self.style.create_label_style("LoginWindow.TLabel", background='#525167')
         self.style.create_button_style("LoginWindow.TButton")
         self.style.create_entry_style("LoginWindow.TEntry")
@@ -28,13 +29,29 @@ class LoginWindow(tk.Frame):
     def welcome_frame(self, parent):
         self.welcome_text = tk.Frame(parent, bg='#3B3A4A', width=420, height=400, highlightthickness=0)
         self.welcome_text.place(x=100, y=110)
+        # Image
+        self.image = Image.open("assets/images/logo.png")
+        self.image = self.image.resize((100, 100), Image.Resampling.LANCZOS)
+        self.image = ImageTk.PhotoImage(self.image)
+        
+        # Add Logo
+        self.logo = ttk.Label(self, image=self.image, style="Logo.TLabel", background="#3B3A4A")
+        self.logo.place(x = 35, y = 80)
+        
         # Etiqueta de bienvenida
-        self.welcome_label = tk.Label(self.welcome_text, text="Welcome!", background="#3B3A4A",foreground="white", font=("CreatoDisplay-Bold", 62))
-        self.welcome_label.place(x=30, y=40)
+        self.welcome_label = tk.Label(self.welcome_text, text="Bienvenidos!", background="#3B3A4A",foreground="white", font=("CreatoDisplay-Bold", 52))
+        self.welcome_label.place(x=5, y = 80)
+
+        self.line = ttk.Separator(self.welcome_text, orient="horizontal")
+        self.line.place(x=10, y=230, width=200, height=3)
 
         # Etiqueta de descripción
-        self.description_label = tk.Label(self.welcome_text, text="We are happy to see you", background="#3B3A4A",foreground="white", font=("Helvetica", 16))
-        self.description_label.place(x=30, y=120)
+        self.multiline_label = tk.Label(self.welcome_text, 
+                                text="Decisiones médicas más rápidas, mejores resultados.\nTriageCare tu aliado en la atención médica de emergencia.",
+                                bg="#3B3A4A", fg="white", font=("CreatoDisplay-Thin", 12),
+                                justify="left",  # Justifica el texto al centro
+                                anchor="center")  
+        self.multiline_label.place(x=5, y=320)
 
         # Etiqueta de instrucciones
 
@@ -44,8 +61,8 @@ class LoginWindow(tk.Frame):
         self.login_text = tk.Frame(parent, bg='#525167', width=400, height=400, highlightthickness=0)
         self.login_text.place(x=700, y=110)
 
-        self.sign_label = tk.Label(self.login_text, text="Sign in", font=("CreatoDisplay-Bold", 32), background="#525167",foreground="white")
-        self.sign_label.place(x=125, y=35)
+        self.sign_label = tk.Label(self.login_text, text="TriageCare", font=("CreatoDisplay-Bold", 32), background="#525167",foreground="white")
+        self.sign_label.place(x=80, y=35)
 
         # Etiqueta "Username" (Nombre de usuario)
         self.username_label = ttk.Label(self.login_text, text="Username", style="LoginWindow.TLabel")

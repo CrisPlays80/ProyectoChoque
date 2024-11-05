@@ -11,10 +11,11 @@ import matplotlib.pyplot as plt
 from tkinter import StringVar
 
 class Data(tk.Frame):
-    def __init__(self, parent, connect_db):
+    def __init__(self, parent, connect_db, style):
         super().__init__(parent, bg="#252330")  # Crea el marco con un fondo oscuro
         self.velocidad, self.orientacion, self.triage = [], [], [] # Almacena los datos de la base de datos
         self.connect_db = connect_db  # Almacena la instancia de la base de datos
+        self.style = style  # Crea un objeto de estilo para personalizar la apariencia
         self.create_widgets()  # Crea los elementos de la interfaz
         self.pack(expand=True, fill="both")  # Expande el marco para que ocupe todo el espacio disponible
         
@@ -29,7 +30,6 @@ class Data(tk.Frame):
         """
         Crea los elementos de la interfaz del marco.
         """
-        self.style = AppStyle()  # Crea un objeto de estilo para personalizar la apariencia
 
         # Crea un estilo personalizado para las etiquetas
         self.style.create_label_style("Data.TLabel", background="#252330", foreground="#F5F9F8")
