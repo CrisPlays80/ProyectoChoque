@@ -13,16 +13,22 @@ class Dashboard(tk.Frame):
         self.connect_db = connect_db
         self.create_widgets()
         self.pack_propagate(False)
+
+        self.data_indicator = tk.Label(self, text="", background="#3B3A4A")
+        self.alert_indicator = tk.Label(self, text="", background="#3B3A4A")
+        
+        self.data_indicator.place(x=8, y=172, width=10, height=30)
+        self.alert_indicator.place(x=8, y=315, width=10, height=30)
         
     def create_widgets(self):
         self.style = AppStyle()
         
         # Crear estilos para las etiquetas
-        self.style.create_label_style("Dashboard.TLabel", font="Helvetica", font_size=15, background="#3B3A4A", foreground="#F5F9F8")
+        self.style.create_label_style("Dashboard.TLabel")
         
         # Crear estilos para el logo
-        self.style.create_label_style("Logo.TLabel", font="Helvetica", font_size=15, background="#3B3A4A", foreground="#FFFFFF")
-        self.style.create_button_style("Dashboard.TButton", font="Helvetica", font_size=15, background="#3B3A4A", foreground="#F5F9F8", borderwidth=0)
+        self.style.create_label_style("Logo.TLabel", background="#3B3A4A")
+        self.style.create_button_style("Dashboard.TButton", borderwidth=0)
 
         # Image
         self.image = Image.open("assets/images/logo.png")
@@ -49,6 +55,8 @@ class Dashboard(tk.Frame):
         """ from . import Alerts
         self.clear_content()
         self.alerts = Alerts(self.content_frame) """
+        self.alert_indicator.configure(bg="green")
+        self.data_indicator.configure(bg="#3B3A4A")
         messagebox.showinfo("Alertas", "En proceso mi profe.....")
 
     def show_data_content(self):
@@ -56,6 +64,8 @@ class Dashboard(tk.Frame):
             from . import Data
             self.clear_content()
             self.data = Data(self.content_frame, self.connect_db)
+            self.alert_indicator.configure(bg="#3B3A4A")
+            self.data_indicator.configure(bg="green")
         else:
             messagebox.showinfo("Error", "Debes iniciar sesión primero")
     def clear_content(self):

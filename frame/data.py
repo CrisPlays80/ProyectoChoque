@@ -32,7 +32,7 @@ class Data(tk.Frame):
         self.style = AppStyle()  # Crea un objeto de estilo para personalizar la apariencia
 
         # Crea un estilo personalizado para las etiquetas
-        self.style.create_label_style("Data.TLabel", font="Franklin Gothic Medium", background="#252330", foreground="#F5F9F8")
+        self.style.create_label_style("Data.TLabel", background="#252330", foreground="#F5F9F8")
 
         # Crea una etiqueta de título
         self.title_label = ttk.Label(self, text="Analytics", style="Data.TLabel")
