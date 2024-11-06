@@ -15,7 +15,7 @@ class Header(tk.Frame):
         # Crear estilos para las etiquetas
         self.style.create_label_style("Header.TLabel", font_size=22, background="#3B3A4A", foreground="#F5F9F8")
 
-        self.label = ttk.Label(self, text=f'Hola, {self.parent.username} bienvenido!', style="Header.TLabel")
+        self.label = ttk.Label(self, text=f'Hola, {self.parent.username}!', style="Header.TLabel")
         self.label.place(x=30, y=45)
 
 

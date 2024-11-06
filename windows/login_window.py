@@ -81,7 +81,12 @@ class LoginWindow(tk.Frame):
         self.password_str = tk.StringVar()  # Se utiliza StringVar para vincular el texto del campo de entrada
         self.password_entry = ttk.Entry(self.login_text, show="*", textvariable=self.password_str, style="LoginWindow.TEntry")
         self.password_entry.place(x=60, y=220, width=280)
-    
+
+        # Etiqueta "Adviser" (Asesor)
+        self.informant_str = tk.StringVar()
+        self.informant_label = tk.Label(self.login_text, text="", textvariable=self.informant_str, font=("CreatoDisplay-Regular", 12), background="#525167",foreground="#F5F9F8")
+        self.informant_label.place(x=52, y=270)
+
         # Botón de "Register" (Registro)
         self.register_button = ttk.Button(self.login_text, text="Register", command=self.register, style="LoginWindow.TButton")
         self.register_button.place(x=60, y=300, width=120)
@@ -97,7 +102,7 @@ class LoginWindow(tk.Frame):
 
         # Si el nombre de usuario o la contraseña están vacíos, mostramos un mensaje de error
         if not username or not password:
-            messagebox.showerror("Error", "Por favor ingrese un nombre de usuario y una contraseña")
+            self.informant_str.set("Por favor ingrese un nombre de usuario y una contraseña")
             return
 
         # Conexión a la base de datos
@@ -110,12 +115,12 @@ class LoginWindow(tk.Frame):
             
             if user:
                 # Si el usuario ya existe, mostramos un mensaje de error
-                messagebox.showerror("Error", "El usuario ya existe")
+                self.informant_str.set("El usuario ya existe")
             else:
                 # Si el usuario no existe, lo insertamos en la base de datos
                 cursor.execute("INSERT INTO USERS (username, password) VALUES (?, ?)", (username, password))
                 self.connect_db.commit()  # Confirmamos los cambios en la base de datos
-                messagebox.showinfo("Registro", "Usuario registrado exitosamente")
+                self.informant_str.set("Usuario registrado exitosamente")
             
             # Cerramos el cursor y la conexión a la base de datos
             cursor.close()
@@ -127,7 +132,7 @@ class LoginWindow(tk.Frame):
 
         # Si el nombre de usuario o la contraseña están vacíos, mostramos un mensaje de error
         if not username or not password:
-            messagebox.showerror("Error", "Por favor ingrese un nombre de usuario y una contraseña")
+            self.informant_str.set("Por favor ingrese un nombre de usuario y una contraseña")
             return
 
         # Conexión a la base de datos
@@ -141,14 +146,14 @@ class LoginWindow(tk.Frame):
             if user:
                 # Si el usuario existe, verificamos si la contraseña es correcta
                 if password == user[2]:  # Verificamos si la contraseña coincide
-                    messagebox.showinfo("Login exitoso", f"¡Bienvenido {username}!")
+                    self.informant_str.set(f"¡Bienvenido {username}!")
                     self.username_callback(username)
                 else:
                     # Si la contraseña no coincide, mostramos un mensaje de error
-                    messagebox.showerror("Error", "Contraseña incorrecta")
+                    self.informant_str.set("Contraseña incorrecta")
             else:
                 # Si el usuario no existe, mostramos un mensaje indicando que debe registrarse
-                messagebox.showerror("Error", "Usuario no encontrado. Por favor, regístrese.")
+                self.informant_str.set("Usuario no encontrado. Por favor, regístrese.")
             
             # Cerramos el cursor y la conexión a la base de datos
             cursor.close()
