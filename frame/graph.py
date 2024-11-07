@@ -17,7 +17,7 @@ class Graph(tk.Frame):
         """
         Crear un dashboard con múltiples gráficos.
         """
-        self.fig = Figure(figsize=(12, 8), dpi=100)
+        self.fig = Figure(figsize=(12, 5), dpi=100)
         self.fig.patch.set_facecolor("#252330")  # Cambiar fondo de la figura
 
         # Colores personalizados para los gráficos

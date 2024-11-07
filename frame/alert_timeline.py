@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
+import random
 
 class AlertTimeline(tk.Frame):
     def __init__(self, parent):
@@ -10,41 +11,62 @@ class AlertTimeline(tk.Frame):
 
     def create_timeline(self):
         # Título
-        title = tk.Label(self, text="Alertas", font=("CreatoDisplay-Regular", 16), bg="#252330", fg="white")
-        title.pack(pady=10)
+        self.add_title()
 
-        # Scrollable frame para el timeline
+        # Frame contenedor para el canvas y la scrollbar
         container = tk.Frame(self, bg="#252330")
-        canvas = tk.Canvas(container, bg="#252330", highlightthickness=0)
-        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
+        container.pack(fill="both", expand=True, padx=20, pady=10)
 
+        # Canvas para el contenido del timeline
+        canvas = tk.Canvas(container, bg="#252330", highlightthickness=0)
+        canvas.pack(side="left", fill="both", expand=True)
+
+        # Scrollbar vertical
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollbar.pack(side="right", fill="y")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Frame para los eventos de alerta
+        scrollable_frame = ttk.Frame(canvas)
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         scrollable_frame.bind(
             "<Configure>",
             lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
 
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
+        # Lista de alertas
+        self.alerts = self.generate_alerts()
 
-        container.pack(fill="both", expand=True)
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Crear alertas como eventos en el timeline
-        self.alerts = [
-            {"time": datetime.now().strftime("%Y-%m-%d %H:%M"), "icon": "⚠️", "text": "Error en la conexión", "details": "Hubo un problema al conectar con el servidor."},
-            {"time": datetime.now().strftime("%Y-%m-%d %H:%M"), "icon": "✅", "text": "Actualización completada", "details": "El sistema se actualizó correctamente."},
-            {"time": datetime.now().strftime("%Y-%m-%d %H:%M"), "icon": "🔔", "text": "Nuevo mensaje", "details": "Tienes un nuevo mensaje en tu bandeja de entrada."},
-        ]
-
+        # Añadir alertas
         for alert in self.alerts:
             self.add_alert_event(scrollable_frame, alert)
 
+    def add_title(self):
+        """Añadir título al panel de alertas"""
+        title = tk.Label(self, text="Alertas", font=("CreatoDisplay-Regular", 16), bg="#252330", fg="white")
+        title.pack(pady=10)
+
+    def generate_alerts(self):
+        """Generar una lista de alertas simuladas"""
+        base_alerts = [
+            {"icon": "⚠️", "text": "Error en la conexión", "details": "Hubo un problema al conectar con el servidor."},
+            {"icon": "✅", "text": "Actualización completada", "details": "El sistema se actualizó correctamente."},
+            {"icon": "🔔", "text": "Nuevo mensaje", "details": "Tienes un nuevo mensaje en tu bandeja de entrada."},
+            {"icon": "🚨", "text": "Alerta de seguridad", "details": "Se detectó un intento de acceso no autorizado."},
+            {"icon": "💾", "text": "Copia de seguridad completada", "details": "La copia de seguridad se realizó sin problemas."},
+        ]
+
+        alerts = []
+        for _ in range(23):  # Crear 23 alertas aleatorias
+            alert = random.choice(base_alerts)
+            alert_copy = alert.copy()
+            alert_copy["time"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+            alerts.append(alert_copy)
+
+        return alerts
+
     def add_alert_event(self, parent, alert):
-        """
-        Añadir un evento de alerta al timeline.
-        """
+        """Añadir un evento de alerta al timeline"""
         frame = ttk.Frame(parent)
         frame.pack(fill="x", pady=10, padx=10, anchor="w")
 
@@ -67,9 +89,7 @@ class AlertTimeline(tk.Frame):
         details_button.pack(anchor="w", pady=2)
 
     def show_details(self, details):
-        """
-        Mostrar una ventana emergente con los detalles de la alerta.
-        """
+        """Mostrar una ventana emergente con los detalles de la alerta"""
         details_window = tk.Toplevel(self)
         details_window.title("Detalles de la Alerta")
         details_window.geometry("300x150")

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 class Intro(tk.Frame):
     def __init__(self, parent):
@@ -13,9 +14,9 @@ class Intro(tk.Frame):
             text="TriageCare",
             font=("CreatoDisplay-Bold", 20),
             background="#252330",
-            foreground="#F5F9F8",
+            foreground="#93b3e6",
         )
-        self.title.pack(pady=10)
+        self.title.place(x = 220, y = 110)  
 
         self.description = tk.Label(
             self,
@@ -30,10 +31,18 @@ orientacion de choque, asi como la clasificacion del triaje que se le da a los
 pacientes involucrados en el accidente. Tambien podran acceder a
 diferentes graficas con informacion relevante sobre estos accidentes para
 una mejor comprension al usuario.""",
-            font=("CreatoDisplay-Regular", 12),
+            font=("CreatoDisplay-Regular", 13),
             background="#252330",
             foreground="#F5F9F8",
-            justify="left",
+            justify = "center",
             anchor="center",
         )
-        self.description.pack(pady=10)
+        self.description.place(x = 50, y = 220)
+
+        self.image = Image.open("assets/images/personal_medico.png")
+        self.image = self.image.resize((1000, 784), Image.Resampling.LANCZOS)
+        self.image = ImageTk.PhotoImage(self.image)
+        
+        # Add Logo
+        self.logo = tk.Label(self, image=self.image, background="#252330")
+        self.logo.place(x = 600, y = 20)

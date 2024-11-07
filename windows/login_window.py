@@ -27,7 +27,7 @@ class LoginWindow(tk.Frame):
         self.login_frame(self.rounded_frame)
 
     def welcome_frame(self, parent):
-        self.welcome_text = tk.Frame(parent, bg='#3B3A4A', width=420, height=400, highlightthickness=0)
+        self.welcome_text = tk.Frame(parent, bg='#3B3A4A', width=440, height=400, highlightthickness=0)
         self.welcome_text.place(x=100, y=110)
         # Image
         self.image = Image.open("assets/images/logo.png")
@@ -48,7 +48,7 @@ class LoginWindow(tk.Frame):
         # Etiqueta de descripción
         self.multiline_label = tk.Label(self.welcome_text, 
                                 text="Decisiones médicas más rápidas, mejores resultados.\nTriageCare tu aliado en la atención médica de emergencia.",
-                                bg="#3B3A4A", fg="white", font=("CreatoDisplay-Thin", 12),
+                                bg="#3B3A4A", fg="white", font=("CreatoDisplay-Regular", 13),
                                 justify="left",  # Justifica el texto al centro
                                 anchor="center")  
         self.multiline_label.place(x=5, y=320)
