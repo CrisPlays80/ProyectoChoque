@@ -1,5 +1,6 @@
 from assets.colors.colors import AppStyle
 from frame import RoundedFrame
+import bcrypt
 
 import tkinter as tk
 from tkinter import ttk
@@ -100,6 +101,10 @@ class LoginWindow(tk.Frame):
         username = self.username_str.get()
         password = self.password_str.get()
 
+        # Hash de la contraseña
+        hashed_password = self.hash_password(password)
+        print("Hashed password:", hashed_password) 
+
         # Si el nombre de usuario o la contraseña están vacíos, mostramos un mensaje de error
         if not username or not password:
             self.informant_str.set("Por favor ingrese un nombre de usuario y una contraseña")
@@ -111,20 +116,19 @@ class LoginWindow(tk.Frame):
 
             # Verificar si el usuario ya existe en la base de datos
             cursor.execute("SELECT * FROM USERS WHERE username = ?", (username,))
-            user = cursor.fetchone()  # Recuperar un solo registro que coincida con el nombre de usuario
-            
+            user = cursor.fetchone()
+
             if user:
-                # Si el usuario ya existe, mostramos un mensaje de error
                 self.informant_str.set("El usuario ya existe")
             else:
-                # Si el usuario no existe, lo insertamos en la base de datos
-                cursor.execute("INSERT INTO USERS (username, password) VALUES (?, ?)", (username, password))
-                self.connect_db.commit()  # Confirmamos los cambios en la base de datos
+                # Convertir el hash de bytes a cadena antes de guardarlo
+                hashed_password_str = hashed_password.decode('utf-8')
+                cursor.execute("INSERT INTO USERS (username, password) VALUES (?, ?)", (username, hashed_password_str))
+                self.connect_db.commit()
                 self.informant_str.set("Usuario registrado exitosamente")
-            
-            # Cerramos el cursor y la conexión a la base de datos
+
             cursor.close()
-    
+
     def login(self):
         # Obtener el valor de los campos de usuario y contraseña
         username = self.username_str.get()
@@ -144,8 +148,9 @@ class LoginWindow(tk.Frame):
             user = cursor.fetchone()  # Recuperar el registro del usuario que coincida
             
             if user:
+                stored_hash = user[2].encode('utf-8')
                 # Si el usuario existe, verificamos si la contraseña es correcta
-                if password == user[2]:  # Verificamos si la contraseña coincide
+                if self.verify_password(stored_hash, password):  # Verificamos si la contraseña coincide
                     self.informant_str.set(f"¡Bienvenido {username}!")
                     self.username_callback(username)
                 else:
@@ -157,3 +162,12 @@ class LoginWindow(tk.Frame):
             
             # Cerramos el cursor y la conexión a la base de datos
             cursor.close()
+
+# Función para hashear la contraseña
+    def hash_password(self, password):
+        salt = bcrypt.gensalt()  # Genera un salt único
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed_password
+
+    def verify_password(self, stored_password_hash, provided_password):   
+        return bcrypt.checkpw(provided_password.encode('utf-8'), stored_password_hash)
