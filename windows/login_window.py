@@ -1,10 +1,8 @@
-from assets.colors.colors import AppStyle
 from frame import RoundedFrame
-import bcrypt
 
+import bcrypt
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 from PIL import Image, ImageTk  # Usamos messagebox para mostrar mensajes de error o confirmación
 
 class LoginWindow(tk.Frame):
@@ -13,6 +11,7 @@ class LoginWindow(tk.Frame):
         self.username_callback = username_callback
         self.connect_db = connect_db
         self.style = style
+        self.is_admin = False
         self.create_widgets()
 
     def create_widgets(self):
@@ -103,7 +102,6 @@ class LoginWindow(tk.Frame):
 
         # Hash de la contraseña
         hashed_password = self.hash_password(password)
-        print("Hashed password:", hashed_password) 
 
         # Si el nombre de usuario o la contraseña están vacíos, mostramos un mensaje de error
         if not username or not password:
@@ -134,34 +132,44 @@ class LoginWindow(tk.Frame):
         username = self.username_str.get()
         password = self.password_str.get()
 
-        # Si el nombre de usuario o la contraseña están vacíos, mostramos un mensaje de error
         if not username or not password:
             self.informant_str.set("Por favor ingrese un nombre de usuario y una contraseña")
             return
 
-        # Conexión a la base de datos
         if self.connect_db:
-            cursor = self.connect_db.cursor()  # Crear un cursor para ejecutar consultas SQL
-
-            # Buscar el usuario en la base de datos
-            cursor.execute("SELECT * FROM USERS WHERE username = ?", (username,))
-            user = cursor.fetchone()  # Recuperar el registro del usuario que coincida
+            cursor = self.connect_db.cursor()
             
-            if user:
-                stored_hash = user[2].encode('utf-8')
-                # Si el usuario existe, verificamos si la contraseña es correcta
-                if self.verify_password(stored_hash, password):  # Verificamos si la contraseña coincide
-                    self.informant_str.set(f"¡Bienvenido {username}!")
-                    self.username_callback(username)
-                else:
-                    # Si la contraseña no coincide, mostramos un mensaje de error
-                    self.informant_str.set("Contraseña incorrecta")
+            # Primero, verifica si el usuario está en la tabla de administradores
+            cursor.execute("SELECT * FROM Administrators WHERE username = ?", (username,))
+            admin = cursor.fetchone()
+            # Si no es administrador, verificar en la tabla de usuarios
+            if not admin:
+                cursor.execute("SELECT * FROM USERS WHERE username = ?", (username,))
+                user = cursor.fetchone()
+                self.is_admin = False
+                print("El usuario no es un administrador")
             else:
-                # Si el usuario no existe, mostramos un mensaje indicando que debe registrarse
+                user = admin
+                self.is_admin = True
+                print("El usuario es un administrador")
+
+            if user:
+                if admin:
+                    if user[2] == password:
+                        self.informant_str.set(f"¡Bienvenido {username}!")
+                        self.username_callback(username)
+                else:
+                    stored_hash = user[2].encode('utf-8')  # Hash de la contraseña guardada
+                    if self.verify_password(stored_hash, password):
+                        self.informant_str.set(f"¡Bienvenido {username}!")                   
+                        self.username_callback(username)
+                    else:
+                        self.informant_str.set("Contraseña incorrecta")
+            else:
                 self.informant_str.set("Usuario no encontrado. Por favor, regístrese.")
-            
-            # Cerramos el cursor y la conexión a la base de datos
+
             cursor.close()
+
 
 # Función para hashear la contraseña
     def hash_password(self, password):

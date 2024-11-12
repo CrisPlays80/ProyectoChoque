@@ -11,6 +11,7 @@ class MainApp(tk.Tk):
         self.configure(bg="#252330")
         self.state("zoomed")
         self.db_connection = connect_db
+        self.is_admin = False
         
         self.style = AppStyle()
 
@@ -27,6 +28,7 @@ class MainApp(tk.Tk):
     def login_success(self, username):
         self.logged_in = True
         self.username = username
+        self.is_admin = self.login_window.is_admin
         self.login_window.destroy()
 
         self.show_main_content()
@@ -34,7 +36,7 @@ class MainApp(tk.Tk):
     def show_main_content(self):
         self.content_frame = tk.Frame(self, bg="#252330")
             
-        self.dashboard = Dashboard(self, self.content_frame, self.db_connection, self.logout, self.style)
+        self.dashboard = Dashboard(self, self.content_frame, self.db_connection, self.logout, self.is_admin, self.style)
         self.dashboard.pack(side="left", fill="y")
                 
         self.header_frame = Header(self, self.db_connection, self.style)

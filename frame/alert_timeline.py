@@ -14,20 +14,21 @@ class AlertTimeline(tk.Frame):
         self.add_title()
 
         # Frame contenedor para el canvas y la scrollbar
-        container = tk.Frame(self, bg="#252330")
-        container.pack(fill="both", expand=True, padx=20, pady=10)
+        container = tk.Frame(self, bg="#252330", width=570, height=500)
+        container.pack(fill = 'both')
+        container.pack_propagate(False)
 
         # Canvas para el contenido del timeline
-        canvas = tk.Canvas(container, bg="#252330", highlightthickness=0)
-        canvas.pack(side="left", fill="both", expand=True)
+        canvas = tk.Canvas(container, bg="#252330", highlightthickness=0, height=500)
+        canvas.place(x = 437, y =0)
 
         # Scrollbar vertical
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar.place(x = 770, y = 0, height=500)
         canvas.configure(yscrollcommand=scrollbar.set)
 
         # Frame para los eventos de alerta
-        scrollable_frame = ttk.Frame(canvas)
+        scrollable_frame = tk.Frame(canvas, bg="#252330")
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
         scrollable_frame.bind(
             "<Configure>",
@@ -67,7 +68,7 @@ class AlertTimeline(tk.Frame):
 
     def add_alert_event(self, parent, alert):
         """Añadir un evento de alerta al timeline"""
-        frame = ttk.Frame(parent)
+        frame = tk.Frame(parent, bg="#252330")
         frame.pack(fill="x", pady=10, padx=10, anchor="w")
 
         # Icono de alerta
@@ -75,7 +76,7 @@ class AlertTimeline(tk.Frame):
         icon_label.grid(row=0, column=0, padx=10)
 
         # Descripción de alerta
-        text_frame = ttk.Frame(frame)
+        text_frame = tk.Frame(frame, bg="#252330")
         text_frame.grid(row=0, column=1, sticky="w")
 
         # Hora y mensaje principal

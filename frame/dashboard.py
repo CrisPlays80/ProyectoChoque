@@ -1,6 +1,3 @@
-from assets.colors.colors import AppStyle
-
-from tkinter import messagebox
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -8,12 +5,13 @@ from PIL import Image, ImageTk
 from functions.calcular_triage import clasificar_triage
 
 class Dashboard(tk.Frame):
-    def __init__(self, parent, content_frame, connect_db, logout_callback, style):
+    def __init__(self, parent, content_frame, connect_db, logout_callback, admin_callback, style):
         super().__init__(parent, background="#3B3A4A", width=160)
         self.parent = parent
         self.content_frame = content_frame
         self.connect_db = connect_db
         self.logout_callback = logout_callback
+        self.enable_buttons = admin_callback
         self.velocidad, self.orientacion, self.triage = [], [], []
         self.style = style
         self.data()
@@ -100,7 +98,7 @@ class Dashboard(tk.Frame):
         
         from . import Data
         self.clear_content()
-        self.data = Data(self.content_frame, self.style, self.velocidad, self.orientacion, self.triage)
+        self.data = Data(self.content_frame, self.style, self.velocidad, self.orientacion, self.triage, self.enable_buttons, self.connect_db)
 
     def clear_content(self):
         for widget in self.content_frame.winfo_children():
@@ -108,7 +106,6 @@ class Dashboard(tk.Frame):
 
     def logout(self):
         self.logout_callback()
-
     def data(self):
         if self.connect_db:
             cursor = self.connect_db.cursor()
