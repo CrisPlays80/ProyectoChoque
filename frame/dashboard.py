@@ -12,7 +12,7 @@ class Dashboard(tk.Frame):
         self.connect_db = connect_db
         self.logout_callback = logout_callback
         self.enable_buttons = admin_callback
-        self.velocidad, self.orientacion, self.triage = [], [], []
+        self.ids, self.velocidad, self.orientacion, self.triage = [], [], [], []
         self.style = style
         self.data()
         self.create_widgets()
@@ -98,7 +98,7 @@ class Dashboard(tk.Frame):
         
         from . import Data
         self.clear_content()
-        self.data = Data(self.content_frame, self.style, self.velocidad, self.orientacion, self.triage, self.enable_buttons, self.connect_db)
+        self.data = Data(self.content_frame, self.style, self.ids, self.velocidad, self.orientacion, self.triage, self.enable_buttons, self.connect_db)
 
     def clear_content(self):
         for widget in self.content_frame.winfo_children():
@@ -109,12 +109,13 @@ class Dashboard(tk.Frame):
     def data(self):
         if self.connect_db:
             cursor = self.connect_db.cursor()
-            cursor.execute("SELECT velocity, orientation FROM DATA_INFO")
+            cursor.execute("SELECT Id, velocity, orientation FROM DATA_INFO")
             rows = cursor.fetchall()
 
             for row in rows: #Guardar los datos en listas para el manejo de los datos
-                self.velocidad.append(row[0])
-                self.orientacion.append(row[1])
-                self.triage.append(clasificar_triage(row[0], row[1]))
+                self.ids.append(row[0])
+                self.velocidad.append(row[1])
+                self.orientacion.append(row[2])
+                self.triage.append(clasificar_triage(row[1], row[2]))
 
             cursor.close()

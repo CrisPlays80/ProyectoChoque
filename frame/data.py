@@ -6,9 +6,9 @@ import tkinter as tk
 from tkinter import ttk
 
 class Data(tk.Frame):
-    def __init__(self, parent, style, velocidad, orientacion, triage, is_admin, connection_db):
+    def __init__(self, parent, style, ids, velocidad, orientacion, triage, is_admin, connection_db):
         super().__init__(parent, bg="#252330")  # Crea el marco con un fondo oscuro
-        self.velocidad, self.orientacion, self.triage = velocidad, orientacion, triage # Almacena los datos de la base de datos # Almacena la instancia de la base de datos
+        self.ids, self.velocidad, self.orientacion, self.triage = ids, velocidad, orientacion, triage # Almacena los datos de la base de datos # Almacena la instancia de la base de datos
         self.style = style  # Crea un objeto de estilo para personalizar la apariencia
         self.enable_button = is_admin
         self.consultas = Consultas(connection_db)
@@ -32,8 +32,12 @@ class Data(tk.Frame):
         self.style.create_treeview_style("Data.Treeview.Heading", background="#252330", foreground="#F5F9F8")
 
         # Crea un árbol para mostrar los datos
-        self.tree = ttk.Treeview(self, columns=("column1", "column2", "column4"), show="headings", height=20, style="Data.Treeview")
-        self.tree.heading("column1", text="Velocidad", )
+        self.tree = ttk.Treeview(self, columns=("column_ID", "column1", "column2", "column4"), show="headings", height=20, style="Data.Treeview")
+        
+        self.tree.heading("column_ID", text="ID")
+        self.tree.column("column_ID", width=0, anchor="center", stretch=tk.NO)
+
+        self.tree.heading("column1", text="Velocidad")
         self.tree.heading("column2", text="Orientacion")
         self.tree.heading("column4", text="Triage")
         self.tree.column("column1", width=180, anchor="center")
@@ -90,7 +94,7 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
 
     def show_data(self):
         for i in range(len(self.velocidad)):
-            self.tree.insert('', 'end', values=(self.velocidad[i], self.orientacion[i], self.triage[i]))
+            self.tree.insert('', 'end', values=(self.ids[i], self.velocidad[i], self.orientacion[i], self.triage[i]))
 
     def sort_table(self, event):
         """
@@ -142,12 +146,12 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
         
         tk.Label(self.edit_window, text="Velocidad").grid(row=0, column=0)
         velocidad_entry = tk.Entry(self.edit_window)
-        velocidad_entry.insert(0, item_values[0])
+        velocidad_entry.insert(0, item_values[1])
         velocidad_entry.grid(row=0, column=1)
         
         tk.Label(self.edit_window, text="Orientación").grid(row=1, column=0)
         orientacion_entry = tk.Entry(self.edit_window)
-        orientacion_entry.insert(0, item_values[1])
+        orientacion_entry.insert(0, item_values[2])
         orientacion_entry.grid(row=1, column=1)
         
         # Botón para guardar los cambios
@@ -170,9 +174,51 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
 
         self.edit_window.destroy()
 
-
     def create_data(self):
-        pass
+        self.create_window = tk.Toplevel(self)
+        self.create_window.title("Crear Registro")
+        
+        tk.Label(self.create_window, text="Velocidad").grid(row=0, column=0)
+        velocidad_entry = tk.Entry(self.create_window)
+        velocidad_entry.grid(row=0, column=1)
+        
+        tk.Label(self.create_window, text="Orientación").grid(row=1, column=0)
+        orientacion_entry = tk.Entry(self.create_window)
+        orientacion_entry.grid(row=1, column=1)
+        
+        # Botón para guardar el nuevo registro
+        tk.Button(self.create_window, text="Guardar", command=lambda: self.save_new_data(velocidad_entry, orientacion_entry)).grid(row=3, column=0, columnspan=2)
+
+    def save_new_data(self, velocidad_entry, orientacion_entry):
+        # Nuevos valores
+        new_values = (velocidad_entry.get(), orientacion_entry.get(), clasificar_triage(velocidad_entry.get(), orientacion_entry.get()))
+        
+        # Guardar en la base de datos
+        query = """INSERT INTO DATA_INFO (velocity, orientation) VALUES (?, ?)"""
+        parametros = (new_values[0], new_values[1])
+        self.consultas.guardar_en_db(query, parametros)
+
+        # Actualizar en el Treeview
+        self.tree.insert('', 'end', values=new_values)
+        
+        self.create_window.destroy()
 
     def delete_data(self):
-        pass
+        selected_item = self.tree.selection()  # Selecciona la fila
+        if not selected_item:
+            print("No se ha seleccionado ninguna fila para eliminar")
+            return
+        
+        # Obtener valores de la fila seleccionada (puedes usar el ID si está disponible)
+        item_values = self.tree.item(selected_item, 'values')
+        
+        # Supongamos que tienes un ID único para cada registro
+        id_registro = item_values[0]  
+        
+        # Eliminar el registro de la base de datos
+        query = """DELETE FROM DATA_INFO WHERE Id = ?"""
+        self.consultas.eliminar_de_db(query, (id_registro,))
+        
+        # Eliminar la fila del Treeview
+        self.tree.delete(selected_item)
+        print(f"Registro con valores {item_values} eliminado")
