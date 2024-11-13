@@ -1,18 +1,13 @@
-import os
 import pyodbc
 import tkinter as tk
 from tkinter import messagebox
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Function to connect to the database
+# Función para conectar a la base de datos
 def connect_db():
-    server = os.environ.get('DB_SERVER')
-    database = os.environ.get('DB_NAME')
-    username = os.environ.get('DB_USERNAME')
-    password = os.environ.get('DB_PASSWORD')
+    server = 'sqlchoque.database.windows.net'
+    database = 'sqlChoque'
+    username = 'admin1234'
+    password = 'sqlserver1234@'
     driver = '{ODBC Driver 17 for SQL Server}'
     
     try:
