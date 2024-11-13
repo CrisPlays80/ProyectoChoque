@@ -1,8 +1,9 @@
-import tkinter as tk
 from assets.colors.colors import AppStyle
 from windows import LoginWindow
 from frame import Dashboard, Header
 from app.connect_db import connect_db
+
+import tkinter as tk
 
 class MainApp(tk.Tk):
     def __init__(self, connect_db):

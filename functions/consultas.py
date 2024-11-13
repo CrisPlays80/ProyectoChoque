@@ -12,6 +12,7 @@ class Consultas:
             cursor = self.conexion.cursor()
             cursor.execute(query, parametros)
             self.conexion.commit()
+            return cursor.lastrowid
             print("Registro guardado correctamente")
         except Exception as e:
             print(f"Error al guardar en la base de datos: {e}")

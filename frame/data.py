@@ -138,7 +138,8 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
             return
         
         # Obtener valores de la fila seleccionada
-        item_values = self.tree.item(selected_item, 'values')
+        current_values = self.tree.item(selected_item, "values")
+        current_id, current_velocidad, current_orientacion, current_triage = current_values
         
         # Crear una ventana emergente con los valores actuales para editar
         self.edit_window = tk.Toplevel(self)
@@ -146,27 +147,30 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
         
         tk.Label(self.edit_window, text="Velocidad").grid(row=0, column=0)
         velocidad_entry = tk.Entry(self.edit_window)
-        velocidad_entry.insert(0, item_values[1])
+        velocidad_entry.insert(0, current_velocidad)
         velocidad_entry.grid(row=0, column=1)
         
         tk.Label(self.edit_window, text="Orientación").grid(row=1, column=0)
         orientacion_entry = tk.Entry(self.edit_window)
-        orientacion_entry.insert(0, item_values[2])
+        orientacion_entry.insert(0, current_orientacion)
         orientacion_entry.grid(row=1, column=1)
         
         # Botón para guardar los cambios
-        tk.Button(self.edit_window, text="Guardar", command=lambda: self.save_modification(selected_item, velocidad_entry, orientacion_entry)).grid(row=3, column=0, columnspan=2)
+        tk.Button(self.edit_window, text="Guardar", command=lambda: self.save_modification(selected_item, current_id, velocidad_entry, orientacion_entry)).grid(row=3, column=0, columnspan=2)
 
-    def save_modification(self, item, velocidad_entry, orientacion_entry):
+    def save_modification(self, item, current_id, current_velocidad, current_orientacion):
         # Nuevos valores
-        new_values = (velocidad_entry.get(), orientacion_entry.get(), clasificar_triage(velocidad_entry.get(), orientacion_entry.get()))
+        new_velocidad = current_velocidad.get()
+        new_orientacion =current_orientacion.get() 
+        new_triage = clasificar_triage(current_velocidad.get(), current_orientacion.get())
         
-        # Suponiendo que tienes un identificador (ID) oculto en tu tabla o los valores sean únicos
-        id_registro = self.tree.item(item, 'values')[0]  # O el ID que tengas en tu tabla
+        if new_velocidad and new_orientacion and new_triage:
+            new_values = (current_id, new_velocidad, new_orientacion, new_triage)
+            self.tree.item(item, values=new_values)
         
         # Actualizar en la base de datos
         query = """UPDATE DATA_INFO SET velocity = ?, orientation = ? WHERE Id = ?"""
-        parametros = (new_values[0], new_values[1], id_registro)
+        parametros = (new_velocidad, new_orientacion, current_id)
         self.consultas.actualizar_registro_en_db(query, parametros)
         
         # Actualizar en el Treeview
@@ -189,18 +193,19 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
         # Botón para guardar el nuevo registro
         tk.Button(self.create_window, text="Guardar", command=lambda: self.save_new_data(velocidad_entry, orientacion_entry)).grid(row=3, column=0, columnspan=2)
 
-    def save_new_data(self, velocidad_entry, orientacion_entry):
+    def save_new_data(self, current_velocidad, current_orientacion):
         # Nuevos valores
-        new_values = (velocidad_entry.get(), orientacion_entry.get(), clasificar_triage(velocidad_entry.get(), orientacion_entry.get()))
+        new_velocidad = current_velocidad.get()
+        new_orientacion =current_orientacion.get() 
+        new_triage = clasificar_triage(current_velocidad.get(), current_orientacion.get())
         
-        # Guardar en la base de datos
-        query = """INSERT INTO DATA_INFO (velocity, orientation) VALUES (?, ?)"""
-        parametros = (new_values[0], new_values[1])
-        self.consultas.guardar_en_db(query, parametros)
-
-        # Actualizar en el Treeview
-        self.tree.insert('', 'end', values=new_values)
-        
+        if new_velocidad and new_orientacion and new_triage:
+            query = """INSERT INTO DATA_INFO (velocity, orientation) VALUES (?, ?)"""
+            parametros = (new_velocidad, new_orientacion)
+            new_id = self.consultas.guardar_en_db(query, parametros)
+            new_values = (new_id, new_velocidad, new_orientacion, new_triage)
+            self.tree.insert('', 'end', values=new_values)
+            
         self.create_window.destroy()
 
     def delete_data(self):
@@ -222,3 +227,13 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
         # Eliminar la fila del Treeview
         self.tree.delete(selected_item)
         print(f"Registro con valores {item_values} eliminado")
+
+    def generate_new_id(self):
+        # Obtener el ID más alto de la base de datos y sumarle 1
+        query = "SELECT MAX(id) FROM tu_tabla"
+        self.cursor.execute(query)
+        max_id = self.cursor.fetchone()[0]
+        
+        if max_id is None:
+            return 1  # Si no hay registros en la tabla, empieza en 1
+        return max_id + 1
