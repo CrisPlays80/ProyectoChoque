@@ -101,22 +101,22 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
         Ordenar la tabla y los datos dependiendo de la selección en el ComboBox.
         """
         option = self.sort_box.get()
-        data_tuples = list(zip(self.velocidad, self.orientacion, self.triage))
+        data_tuples = list(zip(self.ids, self.velocidad, self.orientacion, self.triage))
 
         if "Velocidad" in option:
-            sorted_data = merge_sort(data_tuples, key_index=0, reverse="⬇" in option)
-        elif "Orientación" in option:
             sorted_data = merge_sort(data_tuples, key_index=1, reverse="⬇" in option)
-        elif "Triage" in option:
+        elif "Orientación" in option:
             sorted_data = merge_sort(data_tuples, key_index=2, reverse="⬇" in option)
+        elif "Triage" in option:
+            sorted_data = merge_sort(data_tuples, key_index=3, reverse="⬇" in option)
 
         # Desempaquetar los datos ordenados
-        self.velocidad, self.orientacion, self.triage = zip(*sorted_data)
+        self.ids, self.velocidad, self.orientacion, self.triage = zip(*sorted_data)
         
         # Actualizar la tabla
         self.tree.delete(*self.tree.get_children())
         for i in range(len(self.velocidad)):
-            self.tree.insert('', 'end', values=(self.velocidad[i], self.orientacion[i], self.triage[i]))
+            self.tree.insert('', 'end', values=(self.ids[i], self.velocidad[i], self.orientacion[i], self.triage[i]))
     
     def enable_buttons(self):
         self.style.create_button_style("Data.TButton", foreground="#F5F9F8", background="#3B3A4A", font_size = 14)
@@ -164,8 +164,9 @@ atenderse en consulta externa o en otras áreas menos especializadas.""",
         new_orientacion =current_orientacion.get() 
         new_triage = clasificar_triage(current_velocidad.get(), current_orientacion.get())
         
-        if new_velocidad and new_orientacion and new_triage:
+        if new_velocidad or new_orientacion or new_triage:
             new_values = (current_id, new_velocidad, new_orientacion, new_triage)
+            print(new_values)
             self.tree.item(item, values=new_values)
         
         # Actualizar en la base de datos
